@@ -1,0 +1,93 @@
+{
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [{ "name": "_aadhaar", "type": "string" }],
+      "name": "registerVoter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "_name", "type": "string" },
+        { "name": "_party", "type": "string" },
+        { "name": "_electionId", "type": "uint256" }
+      ],
+      "name": "registerCandidate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "_title", "type": "string" },
+        { "name": "_durationDays", "type": "uint256" }
+      ],
+      "name": "startElection",
+      "outputs": [{ "name": "", "type": "uint256" }],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "_electionId", "type": "uint256" }],
+      "name": "endElection",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "_electionId", "type": "uint256" },
+        { "name": "_candidateId", "type": "uint256" }
+      ],
+      "name": "castVote",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "_electionId", "type": "uint256" },
+        { "name": "_candidateId", "type": "uint256" }
+      ],
+      "name": "getVoteCount",
+      "outputs": [{ "name": "", "type": "uint256" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "_electionId", "type": "uint256" }],
+      "name": "getWinner",
+      "outputs": [
+        { "name": "candidateId", "type": "uint256" },
+        { "name": "name", "type": "string" },
+        { "name": "voteCount", "type": "uint256" }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [{ "name": "_aadhaar", "type": "string" }],
+      "name": "verifyVoter",
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        { "name": "", "type": "address" },
+        { "name": "", "type": "uint256" }
+      ],
+      "name": "hasVotedInElection",
+      "outputs": [{ "name": "", "type": "bool" }],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b5061000161001f640000000039610029565b610017565b610029565b603f8061015f83390190565b60e01c90565b6000604051905090565b600080fd5b600080fd5b600080fd5b600080fd5b6000601f19601f830116905060e01c90565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052604160045260246000fd5b61009282610049565b810181811067ffffffffffffffff821117156100b1576100b061005a565b5b80604052505050565b6000819050919050565b6100ce816100bb565b81146100d957600080fd5b50565b600081565b600060e082840312156100f3576100f2610045565b5b6000610101848285016100c4565b9150509291505056fea2646970667358221220"
+}
