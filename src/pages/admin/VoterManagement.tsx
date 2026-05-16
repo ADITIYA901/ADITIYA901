@@ -37,13 +37,13 @@ function maskAadhaar(aadhaar: string): string {
 
 function getVoterStatus(voter: Voter): 'verified' | 'pending' | 'rejected' {
   if (voter.is_approved && voter.is_verified) return 'verified';
-  if (!voter.is_approved) return 'rejected';
+  if (voter.is_rejected) return 'rejected';
   return 'pending';
 }
 
 function getVotingStatusText(voter: Voter): string {
   if (voter.is_approved && voter.is_verified) return 'Eligible';
-  if (!voter.is_approved) return 'Rejected';
+  if (voter.is_rejected) return 'Rejected';
   return 'Pending';
 }
 
@@ -106,12 +106,12 @@ export default function VoterManagement() {
     try {
       const { error } = await supabase
         .from('voters')
-        .update({ is_approved: false, is_verified: false })
+        .update({ is_rejected: true, is_approved: false, is_verified: false })
         .eq('id', voter.id);
       if (error) throw error;
       toast.success(`${voter.name} has been rejected`);
       setVoters(prev =>
-        prev.map(v => (v.id === voter.id ? { ...v, is_approved: false, is_verified: false } : v))
+        prev.map(v => (v.id === voter.id ? { ...v, is_rejected: true, is_approved: false, is_verified: false } : v))
       );
     } catch (error) {
       console.error('Error rejecting voter:', error);

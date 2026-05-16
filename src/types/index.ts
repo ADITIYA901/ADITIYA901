@@ -14,6 +14,7 @@ export interface Voter {
   wallet_address: string | null;
   is_verified: boolean;
   is_approved: boolean;
+  is_rejected: boolean;
   created_at: string;
 }
 
