@@ -26,25 +26,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading: true,
   });
 
-  const fetchUserProfile = useCallback(async (userId: string, email: string) => {
-    const { data: adminData } = await supabase
-      .from('admins')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle();
+  const fetchUserProfile = useCallback(async (userId: string, email: string, retries = 3) => {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      const { data: adminData } = await supabase
+        .from('admins')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
 
-    if (adminData) {
-      return { user: adminData as Admin, role: 'admin' as UserRole };
-    }
+      if (adminData) {
+        return { user: adminData as Admin, role: 'admin' as UserRole };
+      }
 
-    const { data: voterData } = await supabase
-      .from('voters')
-      .select('*')
-      .eq('id', userId)
-      .maybeSingle();
+      const { data: voterData } = await supabase
+        .from('voters')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
 
-    if (voterData) {
-      return { user: voterData as Voter, role: 'voter' as UserRole };
+      if (voterData) {
+        return { user: voterData as Voter, role: 'voter' as UserRole };
+      }
+
+      if (attempt < retries - 1) {
+        await new Promise(r => setTimeout(r, 500));
+      }
     }
 
     return { user: null, role: null };
@@ -97,18 +103,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signup = useCallback(async (data: SignupData, role: 'admin' | 'voter') => {
-    const { error: authError } = await supabase.auth.signUp({
+    const { data: signUpData, error: authError } = await supabase.auth.signUp({
       email: data.email,
       password: data.password,
     });
     if (authError) throw authError;
 
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) throw new Error('Signup failed');
+    const userId = signUpData.user?.id;
+    if (!userId) throw new Error('Signup failed — no user returned. Check if email confirmation is enabled.');
 
     const tableName = role === 'admin' ? 'admins' : 'voters';
     const profileData: Record<string, unknown> = {
-      id: session.user.id,
+      id: userId,
       email: data.email,
       name: data.name,
     };
@@ -126,7 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: profile } = await supabase
       .from(tableName)
       .select('*')
-      .eq('id', session.user.id)
+      .eq('id', userId)
       .maybeSingle();
 
     setState({ user: profile, role, isAuthenticated: true, isLoading: false });
